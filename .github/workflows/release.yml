@@ -1,0 +1,41 @@
+name: Release
+
+# On every push to main:
+# - if there are pending changesets, opens/updates a "Version Packages" PR
+# - when that PR is merged, publishes the new versions to npm (with provenance)
+
+on:
+  push:
+    branches: [main]
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write # npm provenance
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+
+      - run: corepack enable
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test
+
+      - name: Create version PR or publish to npm
+        uses: changesets/action@v2
+        with:
+          publish-script: pnpm release
+          commit-message: 'chore: version packages'
+          pr-title: 'chore: version packages'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_PROVENANCE: 'true'
