@@ -6,6 +6,7 @@ Developer tools for Maldivian developers, by [Ruh Labs](https://github.com/ruhla
 |---|---|
 | [`@ruhlabs/thaana`](packages/thaana) | Latin ↔ Thaana transliteration and Thaana detection |
 | [`@ruhlabs/validators`](packages/validators) | Maldivian phone numbers and national ID card numbers |
+| [`@ruhlabs/bml-connect`](packages/bml-connect) | Typed client for the Bank of Maldives Connect payment API (server only) |
 
 There's also an [HTTP API](apps/api) that wraps the same packages, for projects that can't use npm.
 
