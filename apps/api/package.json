@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@hono/node-server": "^2.1.6",
+    "@ruhlabs/atolls": "workspace:*",
     "@ruhlabs/thaana": "workspace:*",
     "@ruhlabs/validators": "workspace:*",
     "hono": "^4.13.17"

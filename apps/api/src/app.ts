@@ -1,6 +1,7 @@
 import { Hono, type Context } from 'hono';
 import { cors } from 'hono/cors';
 import { secureHeaders } from 'hono/secure-headers';
+import { ATOLLS, CITIES, getAtoll, parseIslandAddress } from '@ruhlabs/atolls';
 import { toLatin, toThaana, hasThaana } from '@ruhlabs/thaana';
 import { isValidNationalId, normalizeNationalId, parsePhone } from '@ruhlabs/validators';
 import { rateLimit } from './rate-limit.js';
@@ -30,7 +31,10 @@ export function createApp() {
 				'GET /v1/thaana/to-latin?text=',
 				'GET /v1/thaana/to-thaana?text=',
 				'GET /v1/validate/phone?number=',
-				'GET /v1/validate/national-id?id='
+				'GET /v1/validate/national-id?id=',
+				'GET /v1/atolls',
+				'GET /v1/atolls/:query',
+				'GET /v1/address/parse?island='
 			]
 		})
 	);
@@ -61,6 +65,20 @@ export function createApp() {
 		const id = requireParam(c, 'id');
 		if (typeof id !== 'string') return id;
 		return c.json({ input: id, valid: isValidNationalId(id), normalized: normalizeNationalId(id) });
+	});
+
+	app.get('/v1/atolls', (c) => c.json({ atolls: ATOLLS, cities: CITIES }));
+
+	app.get('/v1/atolls/:query', (c) => {
+		const atoll = getAtoll(c.req.param('query'));
+		return atoll ? c.json(atoll) : c.json({ error: 'Atoll not found' }, 404);
+	});
+
+	app.get('/v1/address/parse', (c) => {
+		const island = requireParam(c, 'island');
+		if (typeof island !== 'string') return island;
+		const parsed = parseIslandAddress(island);
+		return parsed ? c.json({ input: island, valid: true, ...parsed }) : c.json({ input: island, valid: false });
 	});
 
 	app.notFound((c) => c.json({ error: 'Not found' }, 404));

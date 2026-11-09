@@ -187,6 +187,9 @@ importers:
       '@hono/node-server':
         specifier: ^2.1.6
         version: 2.1.6(hono@4.13.17)
+      '@ruhlabs/atolls':
+        specifier: workspace:*
+        version: link:../../packages/atolls
       '@ruhlabs/thaana':
         specifier: workspace:*
         version: link:../../packages/thaana
@@ -196,6 +199,8 @@ importers:
       hono:
         specifier: ^4.13.17
         version: 4.13.17
+
+  packages/atolls: {}
 
   packages/thaana: {}
 

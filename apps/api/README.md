@@ -9,6 +9,9 @@ A small HTTP API around the `@ruhlabs/*` packages, built with [Hono](https://hon
 | `GET /v1/thaana/to-thaana?text=` | `raajje` → `{ "output": "ރާއްޖެ" }` |
 | `GET /v1/validate/phone?number=` | `+960 777 1234` → `{ "valid": true, "e164": "+9607771234", ... }` |
 | `GET /v1/validate/national-id?id=` | `a123456` → `{ "valid": true, "normalized": "A123456" }` |
+| `GET /v1/atolls` | All 20 atolls and the 5 cities |
+| `GET /v1/atolls/:query` | `Haa Alif`, `HA`, `ހއ` or `MV-07` → the atoll |
+| `GET /v1/address/parse?island=` | `B. Eydhafushi` → `{ "atoll": { "code": "B", ... }, "island": "Eydhafushi" }` |
 
 `/v1/*` is rate limited to 120 requests per minute per IP. CORS is open, so it can be called from the browser.
 
