@@ -9,6 +9,7 @@ RUN corepack enable
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.base.json ./
 COPY packages/thaana/package.json packages/thaana/
 COPY packages/validators/package.json packages/validators/
+COPY packages/bml-connect/package.json packages/bml-connect/
 COPY apps/api/package.json apps/api/
 RUN pnpm install --frozen-lockfile
 
