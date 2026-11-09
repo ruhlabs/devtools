@@ -1,0 +1,20 @@
+{
+  "name": "@maavadi/api",
+  "version": "0.1.0",
+  "private": true,
+  "description": "HTTP API for Maavadi tools",
+  "type": "module",
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch --onSuccess \"node dist/index.js\"",
+    "start": "node dist/index.js",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@hono/node-server": "^2.1.6",
+    "@maavadi/thaana": "workspace:*",
+    "@maavadi/validators": "workspace:*",
+    "hono": "^4.13.17"
+  }
+}
