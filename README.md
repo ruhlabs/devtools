@@ -1,4 +1,4 @@
-# Maavadi
+# Ruh Labs Devtools
 
 Developer tools for Maldivian developers, by [Ruh Labs](https://github.com/ruhlabs).
 

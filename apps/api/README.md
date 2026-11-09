@@ -1,4 +1,4 @@
-# Maavadi API
+# Ruh Labs API
 
 A small HTTP API around the `@ruhlabs/*` packages, built with [Hono](https://hono.dev).
 
@@ -16,7 +16,7 @@ A small HTTP API around the `@ruhlabs/*` packages, built with [Hono](https://hon
 
 ```bash
 pnpm dev:api          # from the repo root, http://localhost:3000
-docker build -t maavadi-api . && docker run -p 3000:3000 maavadi-api
+docker build -t ruhlabs-api . && docker run -p 3000:3000 ruhlabs-api
 ```
 
 The `PORT` environment variable sets the port (default `3000`).

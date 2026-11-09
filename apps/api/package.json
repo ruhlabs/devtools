@@ -2,7 +2,7 @@
   "name": "@ruhlabs/api",
   "version": "0.1.0",
   "private": true,
-  "description": "HTTP API for Maavadi tools",
+  "description": "HTTP API for Ruh Labs devtools",
   "type": "module",
   "scripts": {
     "build": "tsup",

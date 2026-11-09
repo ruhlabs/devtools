@@ -4,7 +4,7 @@
   "description": "Validators and formatters for Maldivian phone numbers and national ID card numbers",
   "license": "MIT",
   "author": "Ruh Labs",
-  "repository": { "type": "git", "url": "git+https://github.com/ruhlabs/maavadi.git", "directory": "packages/validators" },
+  "repository": { "type": "git", "url": "git+https://github.com/ruhlabs/devtools.git", "directory": "packages/validators" },
   "keywords": ["maldives", "validation", "phone", "national-id", "ruhlabs"],
   "type": "module",
   "main": "./dist/index.cjs",

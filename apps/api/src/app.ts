@@ -23,9 +23,9 @@ export function createApp() {
 
 	app.get('/', (c) =>
 		c.json({
-			name: 'Maavadi API',
+			name: 'Ruh Labs API',
 			description: 'Developer tools for Maldivian developers, by Ruh Labs',
-			docs: 'https://github.com/ruhlabs/maavadi',
+			docs: 'https://github.com/ruhlabs/devtools',
 			endpoints: [
 				'GET /v1/thaana/to-latin?text=',
 				'GET /v1/thaana/to-thaana?text=',

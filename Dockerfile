@@ -1,4 +1,4 @@
-# Builds the Maavadi API (apps/api). The output is one bundled file,
+# Builds the Ruh Labs API (apps/api). The output is one bundled file,
 # so the runtime image has no node_modules.
 
 # ---- build ----
