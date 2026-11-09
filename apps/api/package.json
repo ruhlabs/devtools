@@ -1,5 +1,5 @@
 {
-  "name": "@maavadi/api",
+  "name": "@ruhlabs/api",
   "version": "0.1.0",
   "private": true,
   "description": "HTTP API for Maavadi tools",
@@ -13,8 +13,8 @@
   },
   "dependencies": {
     "@hono/node-server": "^2.1.6",
-    "@maavadi/thaana": "workspace:*",
-    "@maavadi/validators": "workspace:*",
+    "@ruhlabs/thaana": "workspace:*",
+    "@ruhlabs/validators": "workspace:*",
     "hono": "^4.13.17"
   }
 }

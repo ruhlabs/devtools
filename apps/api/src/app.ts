@@ -1,8 +1,8 @@
 import { Hono, type Context } from 'hono';
 import { cors } from 'hono/cors';
 import { secureHeaders } from 'hono/secure-headers';
-import { toLatin, toThaana, hasThaana } from '@maavadi/thaana';
-import { isValidNationalId, normalizeNationalId, parsePhone } from '@maavadi/validators';
+import { toLatin, toThaana, hasThaana } from '@ruhlabs/thaana';
+import { isValidNationalId, normalizeNationalId, parsePhone } from '@ruhlabs/validators';
 import { rateLimit } from './rate-limit.js';
 
 const MAX_TEXT_LENGTH = 5000;

@@ -1,6 +1,6 @@
 # Maavadi API
 
-A small HTTP API around the `@maavadi/*` packages, built with [Hono](https://hono.dev).
+A small HTTP API around the `@ruhlabs/*` packages, built with [Hono](https://hono.dev).
 
 | Endpoint | Example |
 |---|---|

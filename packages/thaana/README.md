@@ -1,15 +1,15 @@
-# @maavadi/thaana
+# @ruhlabs/thaana
 
 Thaana (ތާނަ) utilities for JavaScript and TypeScript: Latin ↔ Thaana transliteration and Thaana detection. No dependencies, works in Node and the browser.
 
 ```bash
-npm install @maavadi/thaana
+npm install @ruhlabs/thaana
 ```
 
 ## Usage
 
 ```ts
-import { toLatin, toThaana, hasThaana, isThaana } from '@maavadi/thaana';
+import { toLatin, toThaana, hasThaana, isThaana } from '@ruhlabs/thaana';
 
 toLatin('ދިވެހިރާއްޖެ'); // "dhivehiraajje"
 toLatin('ހުޅުމާލެ'); // "hulhumaale"

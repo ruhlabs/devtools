@@ -8,10 +8,10 @@
     "node": ">=20"
   },
   "scripts": {
-    "build": "pnpm -r --filter './packages/*' build && pnpm --filter @maavadi/api build",
+    "build": "pnpm -r --filter './packages/*' build && pnpm --filter @ruhlabs/api build",
     "test": "pnpm -r test",
     "typecheck": "pnpm -r typecheck",
-    "dev:api": "pnpm --filter @maavadi/api dev",
+    "dev:api": "pnpm --filter @ruhlabs/api dev",
     "changeset": "changeset",
     "release": "pnpm build && changeset publish"
   },

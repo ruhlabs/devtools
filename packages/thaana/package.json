@@ -1,11 +1,11 @@
 {
-  "name": "@maavadi/thaana",
+  "name": "@ruhlabs/thaana",
   "version": "0.1.0",
   "description": "Thaana (Dhivehi script) utilities: Latin ↔ Thaana transliteration and detection",
   "license": "MIT",
   "author": "Ruh Labs",
   "repository": { "type": "git", "url": "git+https://github.com/ruhlabs/maavadi.git", "directory": "packages/thaana" },
-  "keywords": ["thaana", "dhivehi", "maldives", "transliteration", "maavadi"],
+  "keywords": ["thaana", "dhivehi", "maldives", "transliteration", "ruhlabs"],
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",

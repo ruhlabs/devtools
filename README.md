@@ -4,20 +4,20 @@ Developer tools for Maldivian developers, by [Ruh Labs](https://github.com/ruhla
 
 | Package | Description |
 |---|---|
-| [`@maavadi/thaana`](packages/thaana) | Latin ↔ Thaana transliteration and Thaana detection |
-| [`@maavadi/validators`](packages/validators) | Maldivian phone numbers and national ID card numbers |
+| [`@ruhlabs/thaana`](packages/thaana) | Latin ↔ Thaana transliteration and Thaana detection |
+| [`@ruhlabs/validators`](packages/validators) | Maldivian phone numbers and national ID card numbers |
 
 There's also an [HTTP API](apps/api) that wraps the same packages, for projects that can't use npm.
 
 ## Quick start
 
 ```bash
-npm install @maavadi/thaana @maavadi/validators
+npm install @ruhlabs/thaana @ruhlabs/validators
 ```
 
 ```ts
-import { toLatin, toThaana } from '@maavadi/thaana';
-import { parsePhone, isValidNationalId } from '@maavadi/validators';
+import { toLatin, toThaana } from '@ruhlabs/thaana';
+import { parsePhone, isValidNationalId } from '@ruhlabs/validators';
 
 toLatin('ދިވެހިރާއްޖެ'); // "dhivehiraajje"
 toThaana('raajje'); // "ރާއްޖެ"
