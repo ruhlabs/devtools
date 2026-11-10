@@ -6,3 +6,6 @@ coverage
 .env.*
 !.env.example
 .DS_Store
+
+# API stats database (local dev)
+apps/api/data/
