@@ -4,3 +4,10 @@ packages:
 
 allowBuilds:
   esbuild: true
+
+minimumReleaseAgeExclude:
+  - '@scalar/client-side-rendering@0.4.18'
+  - '@scalar/helpers@0.17.1'
+  - '@scalar/hono-api-reference@0.12.19'
+  - '@scalar/schemas@0.17.0'
+  - '@scalar/types@0.28.0'

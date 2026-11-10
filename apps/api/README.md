@@ -2,6 +2,10 @@
 
 A small HTTP API around the `@ruhlabs/*` packages, built with [Hono](https://hono.dev).
 
+**Docs:** https://api.oreotm.xyz/docs — interactive reference with examples, a "Test Request" button and code samples in many languages. The OpenAPI 3.1 spec is at [`/openapi.json`](https://api.oreotm.xyz/openapi.json).
+
+The docs are generated from the route definitions in `src/app.ts`: each route is declared with `createRoute` and Zod schemas, which validate requests *and* describe them in the spec, so the docs can't drift from the code.
+
 | Endpoint | Example |
 |---|---|
 | `GET /health` | `{ "status": "ok" }` |

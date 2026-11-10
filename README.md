@@ -8,7 +8,7 @@ Developer tools for Maldivian developers, by [Ruh Labs](https://github.com/ruhla
 | [`@ruhlabs/validators`](packages/validators) | Maldivian phone numbers and national ID card numbers |
 | [`@ruhlabs/atolls`](packages/atolls) | Administrative atolls and cities: codes, names, capitals, address parsing |
 
-There's also an [HTTP API](apps/api) that wraps the same packages, for projects that can't use npm.
+There's also an [HTTP API](apps/api) that wraps the same packages, for projects that can't use npm. See the [interactive docs](https://api.oreotm.xyz/docs).
 
 ## Quick start
 
