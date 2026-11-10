@@ -6,6 +6,7 @@ Developer tools for Maldivian developers, by [Ruh Labs](https://github.com/ruhla
 |---|---|
 | [`@ruhlabs/thaana`](packages/thaana) | Latin ↔ Thaana transliteration and Thaana detection |
 | [`@ruhlabs/validators`](packages/validators) | Maldivian phone numbers and national ID card numbers |
+| [`@ruhlabs/atolls`](packages/atolls) | Administrative atolls and cities: codes, names, capitals, address parsing |
 | [`@ruhlabs/bml-connect`](packages/bml-connect) | Typed client for the Bank of Maldives Connect payment API (server only) |
 
 There's also an [HTTP API](apps/api) that wraps the same packages, for projects that can't use npm.
@@ -44,11 +45,12 @@ pnpm dev:api    # run the API locally on http://localhost:3000
 
 Packages are versioned with [Changesets](https://github.com/changesets/changesets):
 
-```bash
-pnpm changeset   # describe your change
-pnpm changeset version
-pnpm release     # build and publish to npm
-```
+1. Make your change, then run `pnpm changeset` and describe it (patch, minor or major).
+2. Commit the generated file in `.changeset/` along with your change and push to `main`.
+3. The **Release** workflow opens a "chore: version packages" PR with the version bumps and changelogs.
+4. Merge that PR and the workflow publishes the new versions to npm with provenance.
+
+The workflow needs an `NPM_TOKEN` repository secret (an npm automation token with publish access to `@ruhlabs`).
 
 ### Deploying the API
 
