@@ -35,6 +35,15 @@ describe('API', () => {
 		expect(body).toMatchObject({ valid: true, normalized: 'A123456' });
 	});
 
+	it('atolls', async () => {
+		const list = await get('/v1/atolls');
+		expect((list.body.atolls as unknown[]).length).toBe(20);
+		expect((await get('/v1/atolls/Haa%20Alif')).body).toMatchObject({ code: 'HA', capital: 'Dhidhdhoo' });
+		expect((await get('/v1/atolls/nope')).status).toBe(404);
+		const parsed = await get(`/v1/address/parse?island=${encodeURIComponent('B. Eydhafushi')}`);
+		expect(parsed.body).toMatchObject({ valid: true, island: 'Eydhafushi', atoll: { code: 'B' } });
+	});
+
 	it('rejects missing params and unknown routes', async () => {
 		expect((await get('/v1/thaana/to-latin')).status).toBe(400);
 		expect((await get('/nope')).status).toBe(404);
