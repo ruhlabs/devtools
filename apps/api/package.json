@@ -13,9 +13,12 @@
   },
   "dependencies": {
     "@hono/node-server": "^2.1.6",
+    "@hono/zod-openapi": "^1.6.3",
     "@ruhlabs/atolls": "workspace:*",
     "@ruhlabs/thaana": "workspace:*",
     "@ruhlabs/validators": "workspace:*",
-    "hono": "^4.13.17"
+    "@scalar/hono-api-reference": "^0.12.18",
+    "hono": "^4.13.17",
+    "zod": "^4.6.7"
   }
 }

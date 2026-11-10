@@ -44,6 +44,20 @@ describe('API', () => {
 		expect(parsed.body).toMatchObject({ valid: true, island: 'Eydhafushi', atoll: { code: 'B' } });
 	});
 
+	it('serves the OpenAPI spec and docs', async () => {
+		const spec = await get('/openapi.json');
+		expect(spec.status).toBe(200);
+		expect(spec.body.openapi).toBe('3.1.0');
+		expect(Object.keys(spec.body.paths as object)).toContain('/v1/validate/phone');
+		const docs = await app.request('/docs');
+		expect(docs.status).toBe(200);
+		expect(await docs.text()).toContain('Ruh Labs API');
+	});
+
+	it('explains validation errors', async () => {
+		expect((await get('/v1/validate/phone')).body).toEqual({ error: 'Missing query parameter "number"' });
+	});
+
 	it('rejects missing params and unknown routes', async () => {
 		expect((await get('/v1/thaana/to-latin')).status).toBe(400);
 		expect((await get('/nope')).status).toBe(404);
