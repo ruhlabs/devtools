@@ -28,40 +28,62 @@ const CURRENT: Record<Current, { label: string; icon: string }> = {
 
 const r1 = (n: number): string => (Math.round(n * 10) / 10).toString();
 
+/** A steady pseudo-random number in 0..1 for a leaflet, so a frond looks the same on every refresh. */
+const noise = (i: number, seed: number): number => {
+	const x = Math.sin(i * 12.9898 + seed * 78.233) * 43758.5453;
+	return x - Math.floor(x);
+};
+
 /**
  * A palm frond with one pair of leaflets per day, oldest at the stem and today at the tip.
  * A day with downtime is a dried leaflet (amber), a bad day a broken one (red, half length),
- * and a day without checks only a bud.
+ * and a day without checks a pale one. The stem arches and each leaflet curves, droops and
+ * varies a little, the way a real frond does.
  */
-export function frond(ticks: Tick[], cls: string): string {
+export function frond(ticks: Tick[], cls: string, seed = 1): string {
 	const n = ticks.length;
 	const step = 10;
-	const pad = 6;
-	const height = 100;
-	const width = pad * 2 + (n - 1) * step + 22;
-	const endX = pad + (n - 1) * step;
+	const pad = 8;
+	const height = 112;
+	const width = pad * 2 + (n - 1) * step + 26;
+	const ribY = (t: number) => 62 - 18 * Math.sin(Math.PI * Math.pow(t, 0.9) * 0.85);
+	const rib: string[] = [];
 	const days = ticks
 		.map((tick, i) => {
 			const t = n > 1 ? i / (n - 1) : 1;
 			const x = pad + i * step;
-			const y = 47 + 5 * t * t;
+			const y = ribY(t);
+			rib.push(`${r1(x)} ${r1(y)}`);
 			// Short at the stem, longest in the middle, tapering to the tip.
 			const envelope = 0.42 + 0.58 * Math.sin(Math.PI * Math.pow(t, 0.8) * 0.9 + 0.2);
-			const length = tick.state === 'none' ? 5 : 50 * envelope * (tick.state === 'down' ? 0.5 : 1);
-			// Leaflets sweep toward the tip.
-			const dx = length * 0.64;
-			const dy = length * 0.77;
-			return `<g class="t ${tick.state}" data-l="${esc(tick.label)}"><line x1="${r1(x)}" y1="${r1(y)}" x2="${r1(x + dx)}" y2="${r1(y - dy)}"/><line x1="${r1(x)}" y1="${r1(y)}" x2="${r1(x + dx)}" y2="${r1(y + dy)}"/><rect x="${r1(x - step / 2)}" y="0" width="${step}" height="${height}"/></g>`;
+			const blade = (side: 1 | -1): string => {
+				const k = i * 2 + (side === 1 ? 0 : 1);
+				const length = 50 * envelope * (0.84 + 0.3 * noise(k, seed)) * (tick.state === 'down' ? 0.5 : 1);
+				// How far the leaflet sweeps toward the tip, and how much it sags.
+				const sweep = 0.52 + 0.24 * noise(k, seed + 7);
+				const dx = length * sweep;
+				const dy = length * Math.sqrt(1 - sweep * sweep * 0.9) * 0.88;
+				const sag = length * (0.1 + 0.12 * noise(k, seed + 13));
+				const tipX = x + dx;
+				const tipY = y - side * dy + sag;
+				// The leaflet leaves the stem steeply, then bends toward the tip.
+				const cx = x + dx * 0.22;
+				const cy = y - side * dy * 0.78;
+				const w = 2.1;
+				return `<path d="M${r1(x - w)} ${r1(y)}Q${r1(cx - w * 0.6)} ${r1(cy)} ${r1(tipX)} ${r1(tipY)}Q${r1(cx + w * 1.4)} ${r1(cy + side * 1.5)} ${r1(x + w)} ${r1(y)}Z"/>`;
+			};
+			return `<g class="t ${tick.state}" data-l="${esc(tick.label)}">${blade(1)}${blade(-1)}<rect x="${r1(x - step / 2)}" y="0" width="${step}" height="${height}"/></g>`;
 		})
 		.join('');
-	return `<svg class="${cls}" viewBox="0 0 ${width} ${height}" aria-hidden="true"><path class="rib" d="M${pad - 4} 47 Q${r1((pad + endX) / 2)} 47 ${endX + 14} 53.4"/>${days}</svg>`;
+	const endX = pad + (n - 1) * step;
+	return `<svg class="${cls}" viewBox="0 0 ${width} ${height}" aria-hidden="true"><path class="rib" d="M${pad - 5} ${r1(ribY(0) + 1)}L${rib.join('L')}L${endX + 12} ${r1(ribY(1) + 3)}"/>${days}</svg>`;
 }
 
 function service(s: ServiceView, style: Brand['style']): string {
 	const current = CURRENT[s.current];
 	const ticks =
 		style === 'frond'
-			? frond(s.ticks, 'wide') + frond(s.ticks.slice(-30), 'narrow')
+			? frond(s.ticks, 'wide', s.id) + frond(s.ticks.slice(-30), 'narrow', s.id)
 			: s.ticks.map((t, i) => `<i class="t ${t.state}${i < s.ticks.length - 30 ? ' o' : ''}" data-l="${esc(t.label)}"></i>`).join('');
 	const uptime = s.uptime === null ? '—' : formatPercent(s.uptime);
 	return `<div class="row">

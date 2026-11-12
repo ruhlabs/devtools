@@ -124,7 +124,8 @@ describe('frond', async () => {
 			'wide'
 		);
 		expect(svg.match(/<g class="t /g)).toHaveLength(3);
-		expect(svg.match(/<line /g)).toHaveLength(6);
+		expect(svg.match(/<path d=/g)).toHaveLength(6);
+		expect(frond([{ state: 'up', label: 'a' }], 'wide', 3)).toBe(frond([{ state: 'up', label: 'a' }], 'wide', 3));
 		expect(svg).toContain('data-l="b &lt;x&gt;"');
 	});
 });

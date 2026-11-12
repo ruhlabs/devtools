@@ -124,20 +124,20 @@ footer{display:flex;justify-content:space-between;align-items:center;gap:12px;fl
 .s-frond .bars{display:block;height:auto;margin:6px 0 0 -6px}
 .s-frond .frond svg{display:block;width:100%;height:auto;overflow:visible}
 .s-frond .frond .narrow{display:none}
-.s-frond .rib{fill:none;stroke:var(--brand);stroke-width:1.6;stroke-linecap:round;opacity:.55}
+.s-frond .rib{fill:none;stroke:var(--brand);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;opacity:.5}
 .s-frond .frond .t{display:inline;background:none;transition:opacity .12s}
-.s-frond .frond line{stroke:var(--none);stroke-width:3.4;stroke-linecap:round}
+.s-frond .frond .t path{fill:color-mix(in srgb,var(--brand) 22%,var(--bg))}
 .s-frond .frond rect{fill:transparent;pointer-events:all}
-.s-frond .frond .up line{stroke:var(--brand)}
-.s-frond .frond .partial line{stroke:var(--partial)}
-.s-frond .frond .down line{stroke:var(--down)}
+.s-frond .frond .up path{fill:var(--brand)}
+.s-frond .frond .partial path{fill:var(--partial)}
+.s-frond .frond .down path{fill:var(--down)}
 .s-frond .frond:hover .t{opacity:.35}
 .s-frond .frond .t:hover{opacity:1}
 .s-frond .cap{font-size:13px}
 .s-frond .legend .t{width:4px;height:16px;border-radius:2px;transform:rotate(25deg);margin:0 3px}
 .s-frond .legend .t.up{background:var(--brand)}
 .s-frond .legend .t.down{height:9px}
-.s-frond .legend .t.none{height:5px}
+.s-frond .legend .t.none{background:color-mix(in srgb,var(--brand) 22%,var(--bg))}
 .s-frond .note{padding:24px 0}
 @keyframes unfurl{from{clip-path:inset(-20% 100% -20% 0)}to{clip-path:inset(-20% -5% -20% 0)}}
 .s-frond.first .frond svg{animation:unfurl 1.1s cubic-bezier(.2,.7,.2,1) both}
