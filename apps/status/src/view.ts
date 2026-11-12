@@ -93,7 +93,7 @@ export function frond(ticks: Tick[], cls: string, seed = 1): string {
 		.join('');
 	const endX = pad + stalk + (n - 1) * step;
 	const stalkPath = `M${pad} ${r1(ribY(0) + 2.5)}L${rib.join('L')}L${endX + 9} ${r1(ribY(1) + 1.5)}`;
-	return `<svg class="${cls}" viewBox="0 0 ${width} ${height}" aria-hidden="true"><path class="rib" d="${stalkPath}"/><path class="stalk" d="M${pad} ${r1(ribY(0) + 2.5)}L${rib[0]}"/>${days}</svg>`;
+	return `<svg class="${cls}" viewBox="0 0 ${width} ${height}" aria-hidden="true"><path class="rib" pathLength="1" d="${stalkPath}"/><path class="stalk" d="M${pad} ${r1(ribY(0) + 2.5)}L${rib[0]}"/>${days}</svg>`;
 }
 
 function service(s: ServiceView, style: Brand['style']): string {

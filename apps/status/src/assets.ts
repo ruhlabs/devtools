@@ -2,6 +2,12 @@ import { createHash } from 'node:crypto';
 
 /** Static files, kept in the bundle so the image is one file. */
 
+/** Each leaflet opens a moment after the one before it, from the stalk to the tip. */
+const LEAF_DELAYS = Array.from(
+	{ length: 90 },
+	(_, i) => `.s-frond.first .frond .t:nth-of-type(${i + 1}){animation-delay:calc(var(--d,0s) + ${i * 19}ms)}`
+).join('\n');
+
 export const CSS = `
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
@@ -143,11 +149,14 @@ footer{display:flex;justify-content:space-between;align-items:center;gap:12px;fl
 .s-frond .legend .t.down{height:9px}
 .s-frond .legend .t.none{background:color-mix(in srgb,var(--brand) 22%,var(--bg))}
 .s-frond .note{padding:24px 0}
-@keyframes unfurl{from{clip-path:inset(-20% 100% -20% 0)}to{clip-path:inset(-20% -5% -20% 0)}}
-.s-frond.first .frond svg{animation:unfurl 1.1s cubic-bezier(.2,.7,.2,1) both}
-.s-frond.first .row:nth-child(2) .frond svg{animation-delay:.12s}
-.s-frond.first .row:nth-child(3) .frond svg{animation-delay:.24s}
-.s-frond.first .group+.group .frond svg{animation-delay:.36s}
+@keyframes stem{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+@keyframes leaf{from{opacity:0;transform:scale(.15)}to{opacity:1;transform:scale(1)}}
+.s-frond.first .row:nth-child(2){--d:.2s}
+.s-frond.first .row:nth-child(3){--d:.4s}
+.s-frond.first .group+.group .row{--d:.6s}
+.s-frond.first .rib{stroke-dasharray:1;animation:stem 1.9s cubic-bezier(.3,.6,.3,1) var(--d,0s) both}
+.s-frond.first .frond .t{transform-box:fill-box;transform-origin:0 50%;animation:leaf .7s cubic-bezier(.2,.8,.2,1) both}
+${LEAF_DELAYS}
 @media (max-width:640px){
 	.s-frond .wrap,.s-frond main{gap:40px}
 	.s-frond .hero{padding:28px 24px;min-height:300px;border-radius:22px}
@@ -157,7 +166,7 @@ footer{display:flex;justify-content:space-between;align-items:center;gap:12px;fl
 	.s-frond .frond .wide{display:none}
 	.s-frond .frond .narrow{display:block}
 }
-@media (prefers-reduced-motion:reduce){.s-frond.first .frond svg{animation:none}}
+@media (prefers-reduced-motion:reduce){.s-frond.first .rib,.s-frond.first .frond .t{animation:none}}
 `;
 
 /** Day labels on hover or tap, and a quiet refresh every minute. */
@@ -181,7 +190,7 @@ export const JS = `(() => {
 		});
 	}
 	bind(document);
-	setTimeout(() => document.body.classList.remove('first'), 2500);
+	setTimeout(() => document.body.classList.remove('first'), 5000);
 	setInterval(async () => {
 		if (document.visibilityState !== 'visible') return;
 		try {
