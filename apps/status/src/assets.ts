@@ -96,7 +96,10 @@ footer{display:flex;justify-content:space-between;align-items:center;gap:12px;fl
 .host::after{content:" · "}
 
 /* ---- frond style: services drawn as palm fronds, a pair of leaflets per day ---- */
-.s-frond .wrap{max-width:1000px;gap:56px}
+/* Palm shade falling across the page from the top right, as it does across the banner. */
+.s-frond{position:relative}
+.s-frond::before{content:"";position:fixed;top:0;right:0;width:min(1500px,135vw);aspect-ratio:1500/844;z-index:0;pointer-events:none;background:url(/shade.webp?v=1) right top/100% auto no-repeat;mix-blend-mode:multiply;opacity:.2}
+.s-frond .wrap{position:relative;z-index:1;max-width:1000px;gap:56px}
 .s-frond main{gap:56px}
 .s-frond .hero{position:relative;overflow:hidden;isolation:isolate;border:0;border-radius:28px;padding:48px;min-height:380px;align-items:flex-end;color:var(--on-brand);background:var(--brand)}
 .s-frond .hero.trouble{background:#7A4310}
@@ -121,10 +124,11 @@ footer{display:flex;justify-content:space-between;align-items:center;gap:12px;fl
 .s-frond .head{align-items:flex-start;gap:28px}
 .s-frond .head .num b{font:600 20px/1.3 var(--font-display)}
 .s-frond .head .num span{font-size:13px}
-.s-frond .bars{display:block;height:auto;margin:6px 0 0 -6px}
+.s-frond .bars{display:block;height:auto;margin:2px 0 0 -6px}
 .s-frond .frond svg{display:block;width:100%;height:auto;overflow:visible}
 .s-frond .frond .narrow{display:none}
-.s-frond .rib{fill:none;stroke:var(--brand);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;opacity:.5}
+.s-frond .rib{fill:none;stroke:var(--brand);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;opacity:.5}
+.s-frond .stalk{fill:none;stroke:var(--brand);stroke-width:3.2;stroke-linecap:round;opacity:.5}
 .s-frond .frond .t{display:inline;background:none;transition:opacity .12s}
 .s-frond .frond .t path{fill:color-mix(in srgb,var(--brand) 22%,var(--bg))}
 .s-frond .frond rect{fill:transparent;pointer-events:all}

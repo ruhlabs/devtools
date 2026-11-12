@@ -37,46 +37,63 @@ const noise = (i: number, seed: number): number => {
 /**
  * A palm frond with one pair of leaflets per day, oldest at the stem and today at the tip.
  * A day with downtime is a dried leaflet (amber), a bad day a broken one (red, half length),
- * and a day without checks a pale one. The stem arches and each leaflet curves, droops and
- * varies a little, the way a real frond does.
+ * and a day without checks a pale one.
+ *
+ * Shaped like a real frond: a bare stalk, long thin leaflets that sweep toward the tip, widest
+ * a third of the way along and shrinking to a point. `seed` gives each service its own frond
+ * (arch, length, where it is widest, how the leaflets sweep), the same on every refresh.
  */
 export function frond(ticks: Tick[], cls: string, seed = 1): string {
 	const n = ticks.length;
 	const step = 10;
-	const pad = 8;
-	const height = 112;
-	const width = pad * 2 + (n - 1) * step + 26;
-	const ribY = (t: number) => 62 - 18 * Math.sin(Math.PI * Math.pow(t, 0.9) * 0.85);
+	const stalk = n > 45 ? 38 : 22;
+	const pad = 6;
+	const height = 132;
+	const width = pad + stalk + (n - 1) * step + 30;
+	// This frond's own character.
+	const f = (k: number) => noise(1000 + k, seed);
+	const arch = 5 + 17 * f(1);
+	const archPower = 0.7 + 0.6 * f(2);
+	const reach = 52 * (0.86 + 0.24 * f(3));
+	const peak = 0.2 + 0.2 * f(4);
+	const baseAngle = 44 + 12 * f(5);
+	const tipAngle = 17 + 8 * f(6);
+	const baseY = 66 + arch * 0.45;
+	const ribY = (t: number) => baseY - arch * Math.sin(Math.PI * Math.pow(Math.max(t, 0), archPower) * 0.85);
 	const rib: string[] = [];
 	const days = ticks
 		.map((tick, i) => {
 			const t = n > 1 ? i / (n - 1) : 1;
-			const x = pad + i * step;
+			const x = pad + stalk + i * step;
 			const y = ribY(t);
 			rib.push(`${r1(x)} ${r1(y)}`);
-			// Short at the stem, longest in the middle, tapering to the tip.
-			const envelope = 0.42 + 0.58 * Math.sin(Math.PI * Math.pow(t, 0.8) * 0.9 + 0.2);
+			// Longest a third of the way along, then smaller and smaller to the tip.
+			const envelope = t < peak ? 0.6 + 0.4 * Math.sin((t / peak) * (Math.PI / 2)) : 0.3 + 0.7 * Math.pow((1 - t) / (1 - peak), 0.85);
 			const blade = (side: 1 | -1): string => {
 				const k = i * 2 + (side === 1 ? 0 : 1);
-				const length = 50 * envelope * (0.84 + 0.3 * noise(k, seed)) * (tick.state === 'down' ? 0.5 : 1);
-				// How far the leaflet sweeps toward the tip, and how much it sags.
-				const sweep = 0.52 + 0.24 * noise(k, seed + 7);
-				const dx = length * sweep;
-				const dy = length * Math.sqrt(1 - sweep * sweep * 0.9) * 0.88;
-				const sag = length * (0.1 + 0.12 * noise(k, seed + 13));
+				// Mostly even, with the odd short or stray leaflet.
+				const stray = noise(k, seed + 29) > 0.9 ? 0.72 : 1;
+				const length = reach * envelope * (0.88 + 0.22 * noise(k, seed)) * stray * (tick.state === 'down' ? 0.5 : 1);
+				// Leaflets lie closer to the stem toward the tip.
+				const angle = ((baseAngle + (tipAngle - baseAngle) * t + 9 * (noise(k, seed + 7) - 0.5)) * Math.PI) / 180;
+				const dx = length * Math.cos(angle);
+				const dy = length * Math.sin(angle);
+				const sag = length * (0.02 + 0.07 * noise(k, seed + 13));
 				const tipX = x + dx;
 				const tipY = y - side * dy + sag;
-				// The leaflet leaves the stem steeply, then bends toward the tip.
-				const cx = x + dx * 0.22;
-				const cy = y - side * dy * 0.78;
-				const w = 2.1;
-				return `<path d="M${r1(x - w)} ${r1(y)}Q${r1(cx - w * 0.6)} ${r1(cy)} ${r1(tipX)} ${r1(tipY)}Q${r1(cx + w * 1.4)} ${r1(cy + side * 1.5)} ${r1(x + w)} ${r1(y)}Z"/>`;
+				// A slight outward bow.
+				const bow = length * (0.04 + 0.05 * noise(k, seed + 17));
+				const cx = x + dx * 0.5 - bow * Math.sin(angle);
+				const cy = y - side * (dy * 0.5 + bow * Math.cos(angle));
+				const w = 1.5;
+				return `<path d="M${r1(x - w)} ${r1(y)}Q${r1(cx - w * 0.5)} ${r1(cy - side * w * 0.5)} ${r1(tipX)} ${r1(tipY)}Q${r1(cx + w)} ${r1(cy + side * w)} ${r1(x + w)} ${r1(y)}Z"/>`;
 			};
 			return `<g class="t ${tick.state}" data-l="${esc(tick.label)}">${blade(1)}${blade(-1)}<rect x="${r1(x - step / 2)}" y="0" width="${step}" height="${height}"/></g>`;
 		})
 		.join('');
-	const endX = pad + (n - 1) * step;
-	return `<svg class="${cls}" viewBox="0 0 ${width} ${height}" aria-hidden="true"><path class="rib" d="M${pad - 5} ${r1(ribY(0) + 1)}L${rib.join('L')}L${endX + 12} ${r1(ribY(1) + 3)}"/>${days}</svg>`;
+	const endX = pad + stalk + (n - 1) * step;
+	const stalkPath = `M${pad} ${r1(ribY(0) + 2.5)}L${rib.join('L')}L${endX + 9} ${r1(ribY(1) + 1.5)}`;
+	return `<svg class="${cls}" viewBox="0 0 ${width} ${height}" aria-hidden="true"><path class="rib" d="${stalkPath}"/><path class="stalk" d="M${pad} ${r1(ribY(0) + 2.5)}L${rib[0]}"/>${days}</svg>`;
 }
 
 function service(s: ServiceView, style: Brand['style']): string {
