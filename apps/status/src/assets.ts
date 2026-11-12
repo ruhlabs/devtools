@@ -1,3 +1,5 @@
+import { createHash } from 'node:crypto';
+
 /** Static files, kept in the bundle so the image is one file. */
 
 export const CSS = `
@@ -100,7 +102,7 @@ footer{display:flex;justify-content:space-between;align-items:center;gap:12px;fl
 .s-frond .hero.trouble{background:#7A4310}
 .s-frond .hero.down{background:#7F1D1D}
 .s-frond .hero.unknown{background:#3B4A44}
-.s-frond .hero::before{content:"";position:absolute;inset:0;z-index:-1;background:url(/hero.webp) right top/cover no-repeat;mix-blend-mode:multiply}
+.s-frond .hero::before{content:"";position:absolute;inset:0;z-index:-1;background:url(/hero.webp?v=1) right top/cover no-repeat;mix-blend-mode:multiply}
 .s-frond .hero-icon{display:none}
 .s-frond .hero h1{font-weight:700;font-size:clamp(40px,8.2vw,84px);letter-spacing:-.035em;line-height:.98;max-width:9em;text-wrap:balance}
 .s-frond .hero p{margin-top:18px;font-size:17px;opacity:.9}
@@ -193,3 +195,6 @@ export const JS = `(() => {
 `;
 
 export const FAVICON = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#0B4D3B"/><path d="M20 48V24m0 8c0-6 5-9 12-9" fill="none" stroke="#F6F1E6" stroke-width="8" stroke-linecap="round"/><circle cx="44" cy="44" r="5" fill="#D39A3A"/></svg>`;
+
+/** Changes whenever the stylesheet or script does. It goes in their URLs so browsers never pair new HTML with old cached files. */
+export const ASSET_VERSION = createHash('sha256').update(CSS).update(JS).digest('hex').slice(0, 10);

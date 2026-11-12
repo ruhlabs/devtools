@@ -1,6 +1,7 @@
 import type { Current, Model, ServiceView, Tick } from './model.js';
 import { formatPercent } from './model.js';
 import type { Brand } from './brands.js';
+import { ASSET_VERSION } from './assets.js';
 import { parseKumaTime } from './kuma.js';
 import { formatClock, formatIsoDay } from './time.js';
 
@@ -147,7 +148,7 @@ export function renderPage(model: Model, brand: Brand, rssUrl: string): string {
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="${esc(brand.fontsHref)}">
-<link rel="stylesheet" href="/app.css">
+<link rel="stylesheet" href="/app.css?v=${ASSET_VERSION}">
 </head>
 <body class="s-${brand.style} first" data-title="${esc(brand.title)}">
 <div class="wrap">
@@ -163,7 +164,7 @@ ${renderMain(model, brand)}
 	${brand.footerHtml}
 </footer>
 </div>
-<script src="/app.js" defer></script>
+<script src="/app.js?v=${ASSET_VERSION}" defer></script>
 </body>
 </html>`;
 }
