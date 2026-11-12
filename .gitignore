@@ -6,4 +6,7 @@ coverage
 .env.*
 !.env.example
 .DS_Store
-data
+
+# Local SQLite data (API stats, status history)
+apps/api/data/
+apps/status/data/

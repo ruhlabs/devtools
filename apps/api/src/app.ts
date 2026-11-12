@@ -6,6 +6,8 @@ import { ATOLLS, CITIES, getAtoll, parseIslandAddress } from '@ruhlabs/atolls';
 import { toLatin, toThaana, hasThaana } from '@ruhlabs/thaana';
 import { isValidNationalId, normalizeNationalId, parsePhone } from '@ruhlabs/validators';
 import { rateLimit } from './rate-limit.js';
+import { isRange, tokenMatches, trackRequests, type Stats } from './stats.js';
+import { statsPage } from './stats-page.js';
 
 const MAX_TEXT_LENGTH = 5000;
 
@@ -202,7 +204,14 @@ const healthRoute = createRoute({
 // App
 // ---------------------------------------------------------------------------
 
-export function createApp() {
+export interface AppOptions {
+	/** Request analytics store. Omit to disable tracking. */
+	stats?: Stats;
+	/** Token for the /stats dashboard. Without it the dashboard is not served. */
+	statsToken?: string;
+}
+
+export function createApp({ stats, statsToken }: AppOptions = {}) {
 	const app = new OpenAPIHono({
 		// Turn Zod validation failures into the same { error } shape as everywhere else.
 		defaultHook: (result, c) => {
@@ -218,6 +227,7 @@ export function createApp() {
 		}
 	});
 
+	if (stats) app.use('*', trackRequests(stats));
 	app.use('*', secureHeaders());
 	app.use('*', cors());
 	app.use('/v1/*', rateLimit({ limit: 120, windowMs: 60_000 }));
@@ -301,6 +311,18 @@ export function createApp() {
 			agent: { disabled: true }
 		})
 	);
+
+	if (stats && statsToken) {
+		app.get('/stats', (c) => c.html(statsPage));
+		app.get('/stats/data', (c) => {
+			const provided = c.req.header('authorization')?.replace(/^Bearer\s+/i, '');
+			if (!tokenMatches(provided, statsToken)) return c.json({ error: 'Unauthorized' }, 401);
+			const range = c.req.query('range') ?? '7d';
+			if (!isRange(range)) return c.json({ error: 'range must be one of 24h, 7d, 30d, 90d' }, 400);
+			c.header('Cache-Control', 'no-store');
+			return c.json(stats.summary(range));
+		});
+	}
 
 	app.notFound((c) => c.json({ error: 'Not found. See /docs for the available endpoints.' }, 404));
 
