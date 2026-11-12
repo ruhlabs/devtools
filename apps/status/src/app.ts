@@ -1,21 +1,23 @@
 import { Hono } from 'hono';
 import { CSS, FAVICON, JS } from './assets.js';
+import { brandCss, type Brand } from './brands.js';
 import type { Model } from './model.js';
 import { renderMain, renderPage } from './view.js';
 
 export interface AppOptions {
+	brand: Brand;
 	model: () => Model;
 	rssUrl: string;
 	/** For /health: when Kuma last answered */
 	lastSuccess: () => number | null;
 }
 
-const CSP = [
+const csp = (brand: Brand) => [
 	"default-src 'self'",
 	"style-src 'self' https://fonts.googleapis.com",
 	'font-src https://fonts.gstatic.com',
 	"script-src 'self'",
-	"img-src 'self' data:",
+	`img-src 'self' data: ${brand.imgOrigins.join(' ')}`.trim(),
 	"connect-src 'self'",
 	"base-uri 'none'",
 	"form-action 'none'",
@@ -35,8 +37,8 @@ export function createApp(options: AppOptions): Hono {
 		const model = options.model();
 		c.header('Cache-Control', 'public, max-age=15');
 		if (c.req.query('fragment')) return c.html(renderMain(model));
-		c.header('Content-Security-Policy', CSP);
-		return c.html(renderPage(model, options.rssUrl));
+		c.header('Content-Security-Policy', csp(options.brand));
+		return c.html(renderPage(model, options.brand, options.rssUrl));
 	});
 
 	app.get('/api/status', (c) => {
@@ -54,7 +56,7 @@ export function createApp(options: AppOptions): Hono {
 
 	const asset = (body: string, type: string) => (c: { body: (b: string, s: 200, h: Record<string, string>) => Response }) =>
 		c.body(body, 200, { 'Content-Type': type, 'Cache-Control': 'public, max-age=3600' });
-	app.get('/app.css', asset(CSS, 'text/css; charset=utf-8'));
+	app.get('/app.css', asset(brandCss(options.brand) + CSS, 'text/css; charset=utf-8'));
 	app.get('/app.js', asset(JS, 'text/javascript; charset=utf-8'));
 	app.get('/favicon.svg', asset(FAVICON, 'image/svg+xml'));
 	app.get('/favicon.ico', (c) => c.redirect('/favicon.svg', 301));

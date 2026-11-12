@@ -1,5 +1,6 @@
 import { fetchKuma, parseKumaTime, type KumaPage } from './kuma.js';
 import { buildModel, type LatestBeat, type Model } from './model.js';
+import type { Brand } from './brands.js';
 import type { BeatStore } from './store.js';
 
 /** Reads Kuma on a timer, saves every check, and keeps the page model ready. */
@@ -12,7 +13,7 @@ export class Monitor {
 
 	constructor(
 		private store: BeatStore,
-		private options: { kumaUrl: string; slug: string; pollMs: number }
+		private options: { kumaUrl: string; slug: string; pollMs: number; brand: Brand }
 	) {
 		this.model = this.build();
 	}
@@ -61,7 +62,9 @@ export class Monitor {
 			days: (id, from) => this.store.days(id, from),
 			now: Date.now(),
 			fetchedAt: this.fetchedAt,
-			staleAfterMs: this.options.pollMs * 5
+			staleAfterMs: this.options.pollMs * 5,
+			hosts: this.options.brand.hosts,
+			pastIncidents: this.options.brand.incidents
 		});
 	}
 }

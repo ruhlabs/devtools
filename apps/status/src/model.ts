@@ -1,5 +1,5 @@
-import { CHECK_MINUTES, HOSTS } from './config.js';
-import { PAST_INCIDENTS, type PastIncident } from './incidents.js';
+import { CHECK_MINUTES } from './config.js';
+import type { PastIncident } from './incidents.js';
 import { DOWN, MAINTENANCE, PENDING, UP, type KumaIncident, type KumaMaintenance, type KumaPage } from './kuma.js';
 import type { DayCount } from './store.js';
 import { DAY_MS, MVT_OFFSET_MS, dayKey, formatClock, formatDay } from './time.js';
@@ -57,6 +57,9 @@ export interface ModelInput {
 	fetchedAt: number | null;
 	/** Kuma is considered unreachable when it hasn't answered for this long */
 	staleAfterMs: number;
+	/** Address shown under each service, by monitor id */
+	hosts: Record<number, string>;
+	pastIncidents: PastIncident[];
 }
 
 export function dayState(pct: number | null): DayState {
@@ -158,7 +161,7 @@ export function buildModel(input: ModelInput): Model {
 				return {
 					id: monitor.id,
 					name: monitor.name,
-					host: HOSTS[monitor.id] ?? null,
+					host: input.hosts[monitor.id] ?? null,
 					current: currentOf(beat?.status),
 					ping: beat && beat.status === UP && beat.ping !== null ? Math.round(beat.ping) : null,
 					uptime,
@@ -177,6 +180,6 @@ export function buildModel(input: ModelInput): Model {
 		groups,
 		incidents: page ? (page.incidents ?? (page.incident ? [page.incident] : [])) : [],
 		maintenance: page?.maintenanceList ?? [],
-		past: PAST_INCIDENTS.filter((incident) => dayKey(Date.parse(`${incident.date}T00:00:00Z`) - MVT_OFFSET_MS) >= oldest)
+		past: input.pastIncidents.filter((incident) => dayKey(Date.parse(`${incident.date}T00:00:00Z`) - MVT_OFFSET_MS) >= oldest)
 	};
 }

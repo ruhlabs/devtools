@@ -2,7 +2,7 @@ import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { serve } from '@hono/node-server';
 import { createApp } from './app.js';
-import { KUMA_SLUG, KUMA_URL, POLL_MS } from './config.js';
+import { BRAND, KUMA_SLUG, KUMA_URL, POLL_MS } from './config.js';
 import { Monitor } from './monitor.js';
 import { BeatStore } from './store.js';
 
@@ -12,17 +12,18 @@ const dataDir = process.env.DATA_DIR ?? join(process.cwd(), 'data');
 mkdirSync(dataDir, { recursive: true });
 
 const store = new BeatStore(join(dataDir, 'status.db'));
-const monitor = new Monitor(store, { kumaUrl: KUMA_URL, slug: KUMA_SLUG, pollMs: POLL_MS });
+const monitor = new Monitor(store, { kumaUrl: KUMA_URL, slug: KUMA_SLUG, pollMs: POLL_MS, brand: BRAND });
 monitor.start();
 
 const app = createApp({
+	brand: BRAND,
 	model: () => monitor.current,
 	rssUrl: `${KUMA_URL}/status/${encodeURIComponent(KUMA_SLUG)}/rss`,
 	lastSuccess: () => monitor.lastSuccess
 });
 
 const server = serve({ fetch: app.fetch, port }, (info) => {
-	console.log(`Ruh Labs status listening on http://localhost:${info.port}, reading ${KUMA_URL}/status/${KUMA_SLUG}`);
+	console.log(`${BRAND.title} listening on http://localhost:${info.port}, reading ${KUMA_URL}/status/${KUMA_SLUG}`);
 });
 
 for (const signal of ['SIGINT', 'SIGTERM'] as const) {
