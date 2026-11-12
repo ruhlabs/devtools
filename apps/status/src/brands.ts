@@ -6,6 +6,10 @@ import type { PastIncident } from './incidents.js';
  */
 export interface Brand {
 	id: string;
+	/** 'frond' draws each service as a palm frond with a leaflet per day; 'bars' as a row of day bars */
+	style: 'frond' | 'bars';
+	/** Hero wording when everything is up (default: "All systems operational") */
+	okTitle?: string;
 	/** Page title when all is well, and the suffix otherwise */
 	title: string;
 	description: string;
@@ -29,6 +33,8 @@ export interface Brand {
 
 const ruh: Brand = {
 	id: 'ruh',
+	style: 'frond',
+	okTitle: 'Everything is running',
 	title: 'Ruh Labs status',
 	description: 'Live status of Ruh Labs services: SET25, Study IAL and the Ruh Labs API.',
 	kumaSlug: 'ruh',
@@ -39,10 +45,10 @@ const ruh: Brand = {
 	favicon: { href: '/favicon.svg', type: 'image/svg+xml' },
 	imgOrigins: [],
 	fontsHref:
-		'https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Inter:wght@400;500;600&family=Noto+Sans+Thaana:wght@500&display=swap',
+		'https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Figtree:wght@400;500;600&family=Noto+Sans+Thaana:wght@500&display=swap',
 	vars: {
-		'font-display': 'Outfit, Inter, sans-serif',
-		'font-body': 'Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif',
+		'font-display': 'Outfit, Figtree, sans-serif',
+		'font-body': 'Figtree, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif',
 		bg: '#F6F1E6',
 		card: '#FFFDF8',
 		line: 'rgba(11,77,59,.12)',
@@ -76,6 +82,7 @@ const ruh: Brand = {
 
 const aircorps: Brand = {
 	id: 'aircorps',
+	style: 'bars',
 	title: 'Air Corps status',
 	description: 'Live status of the Air Corps web apps: Hangar, FAMS, AAMS, PCMS, ATDS and Admin.',
 	kumaSlug: 'aircorps',

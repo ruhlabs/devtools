@@ -1,4 +1,5 @@
 import { Hono } from 'hono';
+import hero from './hero.webp';
 import { CSS, FAVICON, JS } from './assets.js';
 import { brandCss, type Brand } from './brands.js';
 import type { Model } from './model.js';
@@ -36,7 +37,7 @@ export function createApp(options: AppOptions): Hono {
 	app.get('/', (c) => {
 		const model = options.model();
 		c.header('Cache-Control', 'public, max-age=15');
-		if (c.req.query('fragment')) return c.html(renderMain(model));
+		if (c.req.query('fragment')) return c.html(renderMain(model, options.brand));
 		c.header('Content-Security-Policy', csp(options.brand));
 		return c.html(renderPage(model, options.brand, options.rssUrl));
 	});
@@ -59,6 +60,9 @@ export function createApp(options: AppOptions): Hono {
 	app.get('/app.css', asset(brandCss(options.brand) + CSS, 'text/css; charset=utf-8'));
 	app.get('/app.js', asset(JS, 'text/javascript; charset=utf-8'));
 	app.get('/favicon.svg', asset(FAVICON, 'image/svg+xml'));
+	app.get('/hero.webp', (c) =>
+		c.body(hero as Uint8Array<ArrayBuffer>, 200, { 'Content-Type': 'image/webp', 'Cache-Control': 'public, max-age=86400' })
+	);
 	app.get('/favicon.ico', (c) => c.redirect('/favicon.svg', 301));
 
 	app.get('/health', (c) => c.json({ ok: true, kumaLastAnswered: options.lastSuccess() }));

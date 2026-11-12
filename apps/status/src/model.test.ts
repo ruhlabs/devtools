@@ -111,3 +111,20 @@ describe('brands', async () => {
 		expect(pickBrand('aircorps').kumaSlug).toBe('aircorps');
 	});
 });
+
+describe('frond', async () => {
+	const { frond } = await import('./view.js');
+	it('draws one pair of leaflets per day and breaks the down ones', () => {
+		const svg = frond(
+			[
+				{ state: 'up', label: 'a' },
+				{ state: 'down', label: 'b <x>' },
+				{ state: 'none', label: 'c' }
+			],
+			'wide'
+		);
+		expect(svg.match(/<g class="t /g)).toHaveLength(3);
+		expect(svg.match(/<line /g)).toHaveLength(6);
+		expect(svg).toContain('data-l="b &lt;x&gt;"');
+	});
+});

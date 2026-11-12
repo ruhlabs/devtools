@@ -7,6 +7,13 @@ check in SQLite, and serves a server-rendered page with a 90-day history per ser
 Kuma's public API only returns the last 100 checks per monitor, so the history starts when this
 app first runs; earlier days show as "Not monitored yet".
 
+## Brands
+
+`BRAND` picks the brand (`ruh` or `aircorps`, see `src/brands.ts`): its look, Kuma page, service
+addresses and past incidents. The Ruh Labs brand uses the `frond` style: each service is drawn as a
+palm frond with one pair of leaflets per day (amber for some downtime, red and broken for a bad day).
+Its hero image (`src/hero.webp`, palm-frond shadows, generated with Higgsfield) is tinted in CSS.
+
 ## What to edit
 
 - **Which services appear, and their groups:** the Kuma status page (default slug `ruh`).
