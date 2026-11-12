@@ -8,12 +8,13 @@
     "node": ">=20"
   },
   "scripts": {
-    "build": "pnpm -r --filter './packages/*' build && pnpm --filter @ruhlabs/api build",
+    "build": "pnpm -r --filter './packages/*' build && pnpm --filter @ruhlabs/api --filter @ruhlabs/status build",
     "test": "pnpm -r test",
     "typecheck": "pnpm -r typecheck",
     "dev:api": "pnpm --filter @ruhlabs/api dev",
     "changeset": "changeset",
-    "release": "pnpm build && changeset publish"
+    "release": "pnpm build && changeset publish",
+    "dev:status": "pnpm --filter @ruhlabs/status dev"
   },
   "devDependencies": {
     "@changesets/cli": "^3.0.3",

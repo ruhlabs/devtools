@@ -5,5 +5,8 @@
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": ["@ruhlabs/api"]
+  "ignore": [
+    "@ruhlabs/api",
+    "@ruhlabs/status"
+  ]
 }
