@@ -1,4 +1,12 @@
+import { createHash } from 'node:crypto';
+
 /** Static files, kept in the bundle so the image is one file. */
+
+/** Each leaflet opens a moment after the one before it, from the stalk to the tip. */
+const LEAF_DELAYS = Array.from(
+	{ length: 90 },
+	(_, i) => `.s-frond.first .frond .t:nth-of-type(${i + 1}){animation-delay:calc(var(--d,0s) + ${i * 19}ms)}`
+).join('\n');
 
 export const CSS = `
 *{box-sizing:border-box}
@@ -90,6 +98,75 @@ footer{display:flex;justify-content:space-between;align-items:center;gap:12px;fl
 	.narrow{display:inline}
 }
 @media (prefers-reduced-motion:reduce){.t{transition:none}}
+.stop{display:none}
+.host::after{content:" · "}
+
+/* ---- frond style: services drawn as palm fronds, a pair of leaflets per day ---- */
+/* Palm shade falling across the page from the top right, as it does across the banner. */
+.s-frond{position:relative}
+.s-frond::before{content:"";position:fixed;top:0;right:0;width:min(1500px,135vw);aspect-ratio:1500/844;z-index:0;pointer-events:none;background:url(/shade.webp?v=1) right top/100% auto no-repeat;mix-blend-mode:multiply;opacity:.2}
+.s-frond .wrap{position:relative;z-index:1;max-width:1000px;gap:56px}
+.s-frond main{gap:56px}
+.s-frond .hero{position:relative;overflow:hidden;isolation:isolate;border:0;border-radius:28px;padding:48px;min-height:380px;align-items:flex-end;color:var(--on-brand);background:var(--brand)}
+.s-frond .hero.trouble{background:#7A4310}
+.s-frond .hero.down{background:#7F1D1D}
+.s-frond .hero.unknown{background:#3B4A44}
+.s-frond .hero::before{content:"";position:absolute;inset:0;z-index:-1;background:url(/hero.webp?v=1) right top/cover no-repeat;mix-blend-mode:multiply}
+.s-frond .hero-icon{display:none}
+.s-frond .hero h1{font-weight:700;font-size:clamp(40px,8.2vw,84px);letter-spacing:-.035em;line-height:.98;max-width:9em;text-wrap:balance}
+.s-frond .hero p{margin-top:18px;font-size:17px;opacity:.9}
+.s-frond .stop{display:inline;color:var(--on-brand)}
+.s-frond .hero.ok .stop{color:var(--accent)}
+.s-frond .label{font:500 17px var(--font-display);letter-spacing:0;text-transform:none}
+.s-frond .group{gap:8px}
+.s-frond .card{background:none;border:0;border-radius:0}
+.s-frond .list{overflow:visible}
+.s-frond .row{padding:28px 0 24px;gap:6px}
+.s-frond .row+.row{border-top:1px solid var(--line)}
+.s-frond .dot{display:none}
+.s-frond .name b{font:600 26px/1.15 var(--font-display);letter-spacing:-.02em;color:var(--brand)}
+.s-frond .name>span{font-size:14px;display:flex;flex-wrap:wrap;gap:0 12px;margin-top:2px}
+.s-frond .host::after{content:none}
+.s-frond .head{align-items:flex-start;gap:28px}
+.s-frond .head .num b{font:600 20px/1.3 var(--font-display)}
+.s-frond .head .num span{font-size:13px}
+.s-frond .bars{display:block;height:auto;margin:2px 0 0 -6px}
+.s-frond .frond svg{display:block;width:100%;height:auto;overflow:visible}
+.s-frond .frond .narrow{display:none}
+.s-frond .rib{fill:none;stroke:var(--brand);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;opacity:.5}
+.s-frond .stalk{fill:none;stroke:var(--brand);stroke-width:3.2;stroke-linecap:round;opacity:.5}
+.s-frond .frond .t{display:inline;background:none;transition:opacity .12s}
+.s-frond .frond .t path{fill:color-mix(in srgb,var(--brand) 22%,var(--bg))}
+.s-frond .frond rect{fill:transparent;pointer-events:all}
+.s-frond .frond .up path{fill:var(--brand)}
+.s-frond .frond .partial path{fill:var(--partial)}
+.s-frond .frond .down path{fill:var(--down)}
+.s-frond .frond:hover .t{opacity:.35}
+.s-frond .frond .t:hover{opacity:1}
+.s-frond .cap{font-size:13px}
+.s-frond .legend .t{width:4px;height:16px;border-radius:2px;transform:rotate(25deg);margin:0 3px}
+.s-frond .legend .t.up{background:var(--brand)}
+.s-frond .legend .t.down{height:9px}
+.s-frond .legend .t.none{background:color-mix(in srgb,var(--brand) 22%,var(--bg))}
+.s-frond .note{padding:24px 0}
+@keyframes stem{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+@keyframes leaf{from{opacity:0;transform:scale(.15)}to{opacity:1;transform:scale(1)}}
+.s-frond.first .row:nth-child(2){--d:.2s}
+.s-frond.first .row:nth-child(3){--d:.4s}
+.s-frond.first .group+.group .row{--d:.6s}
+.s-frond.first .rib{stroke-dasharray:1;animation:stem 1.9s cubic-bezier(.3,.6,.3,1) var(--d,0s) both}
+.s-frond.first .frond .t{transform-box:fill-box;transform-origin:0 50%;animation:leaf .7s cubic-bezier(.2,.8,.2,1) both}
+${LEAF_DELAYS}
+@media (max-width:640px){
+	.s-frond .wrap,.s-frond main{gap:40px}
+	.s-frond .hero{padding:28px 24px;min-height:300px;border-radius:22px}
+	.s-frond .hero::before{opacity:.7}
+	.s-frond .hero h1{font-size:44px}
+	.s-frond .name b{font-size:22px}
+	.s-frond .frond .wide{display:none}
+	.s-frond .frond .narrow{display:block}
+}
+@media (prefers-reduced-motion:reduce){.s-frond.first .rib,.s-frond.first .frond .t{animation:none}}
 `;
 
 /** Day labels on hover or tap, and a quiet refresh every minute. */
@@ -113,6 +190,7 @@ export const JS = `(() => {
 		});
 	}
 	bind(document);
+	setTimeout(() => document.body.classList.remove('first'), 5000);
 	setInterval(async () => {
 		if (document.visibilityState !== 'visible') return;
 		try {
@@ -130,3 +208,6 @@ export const JS = `(() => {
 `;
 
 export const FAVICON = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#0B4D3B"/><path d="M20 48V24m0 8c0-6 5-9 12-9" fill="none" stroke="#F6F1E6" stroke-width="8" stroke-linecap="round"/><circle cx="44" cy="44" r="5" fill="#D39A3A"/></svg>`;
+
+/** Changes whenever the stylesheet or script does. It goes in their URLs so browsers never pair new HTML with old cached files. */
+export const ASSET_VERSION = createHash('sha256').update(CSS).update(JS).digest('hex').slice(0, 10);

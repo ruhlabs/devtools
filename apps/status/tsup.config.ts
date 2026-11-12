@@ -8,5 +8,7 @@ export default defineConfig({
 	target: 'node22',
 	clean: true,
 	sourcemap: true,
-	noExternal: [/.*/]
+	noExternal: [/.*/],
+	// The hero image ships inside the bundle.
+	loader: { '.webp': 'binary' }
 });
