@@ -1,5 +1,6 @@
 import type { Current, Model, ServiceView } from './model.js';
 import { formatPercent } from './model.js';
+import type { Brand } from './brands.js';
 import { parseKumaTime } from './kuma.js';
 import { formatClock, formatIsoDay } from './time.js';
 
@@ -78,7 +79,7 @@ export function renderMain(model: Model): string {
 	const past = model.past
 		.map(
 			(i) => `<div class="card note">
-	<div class="meta"><span class="pill ok">Resolved</span><span>${esc(formatIsoDay(i.date))} · ${esc(i.duration)}</span></div>
+	<div class="meta"><span class="pill ok">Resolved</span><span>${esc(formatIsoDay(i.date))}${i.duration ? ` · ${esc(i.duration)}` : ''}</span></div>
 	<h3>${esc(i.title)}</h3><p>${esc(i.body)}</p>
 </div>`
 		)
@@ -100,25 +101,25 @@ ${groups}
 </section>`;
 }
 
-export function renderPage(model: Model, rssUrl: string): string {
+export function renderPage(model: Model, brand: Brand, rssUrl: string): string {
 	return `<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${esc(model.overall.state === 'ok' ? 'Ruh Labs status' : `${model.overall.title} · Ruh Labs status`)}</title>
-<meta name="description" content="Live status of Ruh Labs services: SET25, Study IAL and the Ruh Labs API.">
-<meta name="theme-color" content="#F6F1E6">
-<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<title>${esc(model.overall.state === 'ok' ? brand.title : `${model.overall.title} · ${brand.title}`)}</title>
+<meta name="description" content="${esc(brand.description)}">
+<meta name="theme-color" content="${esc(brand.vars.bg ?? '#ffffff')}">
+<link rel="icon" href="${esc(brand.favicon.href)}" type="${esc(brand.favicon.type)}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Inter:wght@400;500;600&family=Noto+Sans+Thaana:wght@500&display=swap">
+<link rel="stylesheet" href="${esc(brand.fontsHref)}">
 <link rel="stylesheet" href="/app.css">
 </head>
-<body>
+<body data-title="${esc(brand.title)}">
 <div class="wrap">
 <header>
-	<a class="brand" href="/" aria-label="Ruh Labs status"><span class="mark">ruh<span>.</span></span><span class="bar"></span><span class="what">Status</span></a>
+	<a class="brand" href="/" aria-label="${esc(brand.title)}">${brand.headerHtml}</a>
 	<nav><a href="#incidents">Past incidents</a><a href="${esc(rssUrl)}">RSS feed</a></nav>
 </header>
 <main>
@@ -126,7 +127,7 @@ ${renderMain(model)}
 </main>
 <footer>
 	<span>Checked every minute from our servers. Times are Maldives time.</span>
-	<span class="sig"><b>Ruh Labs</b><span lang="dv" dir="rtl">ރުއް ލެބްސް</span></span>
+	${brand.footerHtml}
 </footer>
 </div>
 <script src="/app.js" defer></script>

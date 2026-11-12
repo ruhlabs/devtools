@@ -88,11 +88,26 @@ describe('buildModel', () => {
 			days: () => new Map(),
 			now,
 			fetchedAt: now,
-			staleAfterMs: 300_000
+			staleAfterMs: 300_000,
+			hosts: { 3: 'set25.mv' },
+			pastIncidents: [{ date: '2026-11-12', title: 't', body: 'b' }, { date: '2026-01-01', title: 'old', body: 'b' }]
 		});
 		expect(model.groups.map((g) => g.name)).toEqual(['First', 'Second']);
 		expect(model.groups[0]!.services[0]).toMatchObject({ current: 'up', ping: 412, host: 'set25.mv' });
 		expect(model.groups[1]!.services[0]!.current).toBe('unknown');
-		expect(model.past.length).toBeGreaterThan(0);
+		expect(model.past.map((p) => p.title)).toEqual(['t']);
+	});
+});
+
+describe('brands', async () => {
+	const { BRANDS, brandCss, pickBrand } = await import('./brands.js');
+	it('every brand sets the same CSS variables', () => {
+		const keys = Object.keys(BRANDS.ruh!.vars).sort();
+		for (const brand of Object.values(BRANDS)) expect(Object.keys(brand.vars).sort()).toEqual(keys);
+		expect(brandCss(BRANDS.aircorps!)).toMatch(/^:root\{--font-display:/);
+	});
+	it('refuses an unknown brand', () => {
+		expect(() => pickBrand('nope')).toThrow(/Unknown BRAND/);
+		expect(pickBrand('aircorps').kumaSlug).toBe('aircorps');
 	});
 });
