@@ -25,6 +25,11 @@ COPY --from=build /app/apps/api/dist ./dist
 # Request analytics (SQLite). Mount a volume here so stats survive redeploys.
 RUN mkdir -p /app/data && chown node:node /app/data
 VOLUME /app/data
+# tini runs first and reaps finished child processes. Without it, Node is PID 1 and never does,
+# so health-check runs that time out pile up as zombie processes on the host.
+ADD https://github.com/krallin/tini/releases/download/v0.19.0/tini-static /tini
+RUN chmod +x /tini
+ENTRYPOINT ["/tini", "--"]
 USER node
 EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s \
